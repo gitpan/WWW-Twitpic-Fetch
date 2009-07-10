@@ -1,5 +1,9 @@
 Revision history for WWW-Twitpic-Fetch
 
+0.03		20090711
+				added tagged() method
+				get tags information from scaled photo page.
+
 0.02    2009710
         modified pod.
         photo_info() now can accept url of photo page instead of photo id.

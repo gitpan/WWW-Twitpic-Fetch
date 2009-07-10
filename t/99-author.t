@@ -31,6 +31,9 @@ SKIP: {
 	my $photouri=URI->new($photo->{url});
 	my $filename = (split(m{/}, $photouri->path))[-1];
 	$tp->ua->mirror($photouri, $filename);
+
+	$f->printf("### tagged photos\n");
+	_dump($f, $tp->tagged('cat'));
 }
 
 

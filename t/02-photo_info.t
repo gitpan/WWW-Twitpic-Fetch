@@ -68,6 +68,10 @@ sub get
 	<div style="font-size:14px;"><b>Views</b> 34</div>
 
 </div>
+<div id="view-photo-tags">
+		<span>+</span><a class="nav" style="font-size:12px;" href="/tag/tag1">tag1</a>
+		<span>+</span><a class="nav" style="font-size:12px;" href="/tag/tag2">tag2</a>
+</div>
 </body>
 </html>
 EOS
@@ -92,6 +96,7 @@ is_deeply $res, {
 		date => "on June 22, 2009",
 		comment => "TEST COMMENT",
 	}],
+	tags => [qw/tag1 tag2/],
 };
 
 package UA3;
