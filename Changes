@@ -1,5 +1,8 @@
 Revision history for WWW-Twitpic-Fetch
 
+0.04		20090711
+				just increment version number because I have mistaken uploading distfile. :(
+
 0.03		20090711
 				added tagged() method
 				get tags information from scaled photo page.

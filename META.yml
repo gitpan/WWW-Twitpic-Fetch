@@ -1,6 +1,6 @@
 --- #YAML:1.0
 name:               WWW-Twitpic-Fetch
-version:            0.03
+version:            0.04
 abstract:           Moose-based information scraper/fetcher for Twitpic
 author:
     - turugina <turugina@cpan.org>
