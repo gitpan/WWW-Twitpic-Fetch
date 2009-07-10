@@ -1,5 +1,10 @@
 Revision history for WWW-Twitpic-Fetch
 
+0.02    2009710
+        modified pod.
+        photo_info() now can accept url of photo page instead of photo id.
+        
+
 0.01    20090708
         First version.
 

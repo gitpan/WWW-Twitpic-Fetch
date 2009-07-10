@@ -1,4 +1,4 @@
-use Test::More tests => 9;
+use Test::More tests => 10;
 
 use WWW::Twitpic::Fetch;
 
@@ -11,6 +11,10 @@ isa_ok $twitpic->ua, 'LWP::UserAgent';
 { local $@;
 	eval { $twitpic->list; };
 	ok $@;
+}
+{ local $@;
+  eval { $twitpic->list('invalid+username') };
+  ok $@;
 }
 
 package UA1;

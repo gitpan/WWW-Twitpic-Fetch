@@ -1,4 +1,4 @@
-use Test::More tests => 10;
+use Test::More tests => 17;
 
 use WWW::Twitpic::Fetch;
 
@@ -8,6 +8,10 @@ ok $twitpic;
 
 { local $@;
 	eval { $twitpic->photo_info; };
+	ok $@;
+}
+{ local $@;
+	eval { $twitpic->photo_info('invalid_id'); };
 	ok $@;
 }
 
@@ -121,6 +125,22 @@ package main;
 $twitpic->ua(UA3->new);
 
 $res = $twitpic->photo_info("1bc34x", 1);
+
+ok $res;
+
+is_deeply $res, { 
+	url => "example-full.png",
+};
+
+$res = $twitpic->photo_info("http://twitpic.com/1bc34x", 1);
+
+ok $res;
+
+is_deeply $res, { 
+	url => "example-full.png",
+};
+
+$res = $twitpic->photo_info("http://www.twitpic.com/1bc34x/full", 1);
 
 ok $res;
 

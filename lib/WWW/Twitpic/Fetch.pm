@@ -15,23 +15,29 @@ WWW::Twitpic::Fetch - Moose-based information scraper/fetcher for Twitpic
 
 =head1 VERSION
 
-Version 0.01
+Version 0.02
 
 =cut
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 
 =head1 SYNOPSIS
 
-	use WWW::Twitpic::Fetch;
-	
-	my $twitpic = WWW::Twitpic::Fetch->new();
-	my $list = $twitpic->list($username, $page);
-	my $photoinfo = $twitpic->photo_info($list->[0]{id}, 0);
-	...
+  use WWW::Twitpic::Fetch;
+  
+  my $twitpic = WWW::Twitpic::Fetch->new();
+  my $list = $twitpic->list($username, $page);
+  my $photoinfo = $twitpic->photo_info($list->[0]{id}, 0);
+  ...
 
 =head1 ATTRIBUTES
+
+attributes can be specified by parameter of C<new> like
+
+  WWW::Twitpic::Fetch->new(
+    ua => $my_ua
+  );
 
 =head2 ua
 
@@ -41,116 +47,116 @@ default is an instance of LWP::UserAgent.
 =head2 username
 
 username for twitter (and also twitpic).
-UNUSED for this version
+B<UNUSED for this version>
 
 =head2 password
 
 password for twitter (and also twitpic).
-UNUSED for this version 
+B<UNUSED for this version>
 
 =cut
 
 has ua => (
-	is => q/rw/,
-	isa => q/Ref/,
-	default => sub {
-		my $ua = LWP::UserAgent->new;
-		$ua->env_proxy;
-		$ua;
-	},
+  is => q/rw/,
+  isa => q/Ref/,
+  default => sub {
+    my $ua = LWP::UserAgent->new;
+    $ua->env_proxy;
+    $ua;
+  },
 );
 
 has username => (
-	is => q/ro/,
-	isa => q/Str/,
-	#required => 1,
+  is => q/ro/,
+  isa => q/Str/,
+  #required => 1,
 );
 
 has password => (
-	is => q/ro/,
-	isa => q/Str/,
-	#required => 1,
+  is => q/ro/,
+  isa => q/Str/,
+  #required => 1,
 );
 
 # private attributes
 
 has _list_scraper => (
-	is => q/ro/,
-	lazy => 1,
-	default => sub {
-		scraper {
-			process 'div.profile-photo-img>a' => 'id[]' => '@href';
-			process 'div.profile-photo-img>a>img' => 'thumb[]' => '@src';
-			process 'div.profile-photo-message' => 'message[]' => 'TEXT';
-		};
-	},
+  is => q/ro/,
+  lazy => 1,
+  default => sub {
+    scraper {
+      process 'div.profile-photo-img>a' => 'id[]' => '@href';
+      process 'div.profile-photo-img>a>img' => 'thumb[]' => '@src';
+      process 'div.profile-photo-message' => 'message[]' => 'TEXT';
+    };
+  },
 );
 
 has _photo_full_scraper => (
-	is => q/ro/,
-	lazy => 1,
-	default => sub {
-		scraper {
-			process 'div#pic>img' => 'url' => '@src';
-		};
-	},
+  is => q/ro/,
+  lazy => 1,
+  default => sub {
+    scraper {
+      process 'div#pic>img' => 'url' => '@src';
+    };
+  },
 );
 
 has _photo_scaled_scraper => (
-	is => q/ro/,
-	lazy => 1,
-	default => sub {
-		my $each_comment = scraper {
-			process 'div.photo-comment-info>a' => 'username' => 'TEXT';
-			process 'div.photo-comment-info>span.photo-comment-date' => 'date' => 'TEXT';
-			process 'div.photo-comment-message' => 'comment' => 'TEXT';
-			process 'div.photo-comment-avatar>img' => 'avatar' => '@src';
-		};
-		scraper {
-			process 'div#photo>img' => 'url' => '@src';
-			process 'div#view-photo-views>div' => 'views' => 'TEXT';
-			process 'div#view-photo-caption' => 'message' => 'TEXT';
-			process 'div.photo-comment' => 'comments[]' => $each_comment;
-		};
-	},
+  is => q/ro/,
+  lazy => 1,
+  default => sub {
+    my $each_comment = scraper {
+      process 'div.photo-comment-info>a' => 'username' => 'TEXT';
+      process 'div.photo-comment-info>span.photo-comment-date' => 'date' => 'TEXT';
+      process 'div.photo-comment-message' => 'comment' => 'TEXT';
+      process 'div.photo-comment-avatar>img' => 'avatar' => '@src';
+    };
+    scraper {
+      process 'div#photo>img' => 'url' => '@src';
+      process 'div#view-photo-views>div' => 'views' => 'TEXT';
+      process 'div#view-photo-caption' => 'message' => 'TEXT';
+      process 'div.photo-comment' => 'comments[]' => $each_comment;
+    };
+  },
 );
 
 has _public_timeline_scraper => (
-	is => q/ro/,
-	lazy => 1,
-	default => sub {
-		my $each = scraper {
-			process 'img.avatar' => 'avatar' => '@src';
-			process 'a.nav' => 'username' => 'TEXT';
-			process 'td>div>a' => 'id[]' => '@href';
-			process 'td>div' => 'message[]' => 'TEXT';
-			process 'div>a>img' => 'mini' => '@src';
-		};
-		scraper {
-			process 'div.comment>table>tr' => 'photos[]' => $each;
-		};
-	},
+  is => q/ro/,
+  lazy => 1,
+  default => sub {
+    my $each = scraper {
+      process 'img.avatar' => 'avatar' => '@src';
+      process 'a.nav' => 'username' => 'TEXT';
+      process 'td>div>a' => 'id[]' => '@href';
+      process 'td>div' => 'message[]' => 'TEXT';
+      process 'div>a>img' => 'mini' => '@src';
+    };
+    scraper {
+      process 'div.comment>table>tr' => 'photos[]' => $each;
+    };
+  },
 );
 
 =head1 FUNCTIONS
 
-=head2 list(USERNAME [, PAGE])
+=head2 list I<username> [, I<page>] 
 
-get list of photo informations for USERNAME.
+get list of photo informations for I<username>.
 
 returns arrayref of hashref containing following keys
-'id', 'message', 'thumb' when success.
-('id' is for each photo, and 'thumb' is for url of thumbnail image of photo)
+C<'id'>, C<'message'>, C<'thumb'> when success.
+(C<'id'> is a photo id, and C<'thumb'> is for url of thumbnail image of photo)
 
 returns undef if failed to fetch list.
 
 =over 1
 
-=item USERNAME (required)
+=item I<username> (required)
 
 specifies whose photo list.
 
-=item PAGE
+=item I<page>
 
 specifies page of list. can be omitted. (default = 1) 
 
@@ -160,57 +166,62 @@ specifies page of list. can be omitted. (default = 1)
 
 sub list
 {
-	my ($self, $username, $page) = @_;
-	croak "invalid username: @{[$username?$username:'']}" if !$username;
-	$page += 0 if $page;
-	$page = 1 if !defined $page or $page < 1;
+  my ($self, $username, $page) = @_;
+  croak "invalid username: @{[$username?$username:'']}" if !$username || $username !~ m{^[[:alnum:]_]+$};
+  $page += 0 if $page;
+  $page = 1 if !defined $page || $page < 1;
 
-	my $ua = $self->ua;
+  my $ua = $self->ua;
 
-	my $uri = URI->new('http://twitpic.com/photos/'.$username);
-	if ( $page > 1 ) {
-		$uri->query_form(page => $page);
-	}
-	my $res = $ua->get($uri);
-	if ( !$res->is_success ) {
-		return undef;
-	}
+  my $uri = URI->new('http://twitpic.com/photos/'.$username);
+  if ( $page > 1 ) {
+    $uri->query_form(page => $page);
+  }
+  my $res = $ua->get($uri);
+  if ( !$res->is_success ) {
+    return undef;
+  }
 
-	my $sres = $self->_list_scraper->scrape(decode_utf8($res->content));
+  my $sres = $self->_list_scraper->scrape(decode_utf8($res->content));
 
-	my ($ids, $messages, $thumbs) = map { $sres->{$_} } qw/id message thumb/;
+  my ($ids, $messages, $thumbs) = map { $sres->{$_} } qw/id message thumb/;
 
-	warn 'mismatch found for photo ids and messages. return value may be wrong'
-	if !(scalar @$ids == scalar @$messages && scalar @$ids == scalar @$thumbs);
+  warn 'mismatch found for photo ids and messages. return value may be wrong'
+  if !(scalar @$ids == scalar @$messages && scalar @$ids == scalar @$thumbs);
 
-	$_ =~ s#^/## for @$ids;
-	trim for @$messages;
+  $_ =~ s#^/## for @$ids;
+  trim for @$messages;
 
-	my $ea = each_array(@$ids, @$messages, @$thumbs);
-	my @list;
-	while (my ($id, $message, $thumb) = $ea->() ) {
-		push @list, +{ id => $id, message => $message, thumb => $thumb };
-	}
+  my $ea = each_array(@$ids, @$messages, @$thumbs);
+  my @list;
+  while (my ($id, $message, $thumb) = $ea->() ) {
+    push @list, +{ id => $id, message => $message, thumb => $thumb };
+  }
 
-	\@list;
+  \@list;
 }
-	
-=head2 photo_info ID [, FULL?]
+
+=head2 photo_info I<photo ID or URL of photo page> [, I<full?>]
 
 get informations of photo file.
 
-returns following informations for scaled, 'url', 'message', 'comments', 'views'.
-and for full-size, 'url'.
+returns hashref containing following keys ..
+
+C<'url'>, C<'message'>, C<'comments'>, C<'views'> for scaled.
+
+just C<'url'> for fullsize.
 
 return undef if failed to fetch.
 
 =over 1
 
-=item ID (required)
+=item I<photo ID or url of photo page> (required)
 
 photo id. you can get photo id by list() or public_timeline().
 
-=item FULL?
+or you can just pass an url of certain photo page.
+
+=item I<full?>
 
 FALSE for scaled photo. TRUE for full-size photo.
 (default = FALSE).
@@ -220,29 +231,34 @@ FALSE for scaled photo. TRUE for full-size photo.
 =cut
 
 sub photo_info {
-	my ($self, $id, $full) = @_;
+  my ($self, $id, $full) = @_;
 
-	croak "invalid photo id: @{[$id?$id:'']}" if !$id;
+  if ( $id && $id =~ m{http://(?:www\.)?twitpic\.com/([[:alnum:]]+)} ) {
+    $id = $1;
+  }
+  elsif ( !$id || $id !~ m{^[[:alnum:]]+$} ) {
+    croak "invalid photo id: @{[$id?$id:'']}";
+  }
 
-	my $url = URI->new('http://twitpic.com/' . $id . ($full ? '/full' : ''));
-	my $res = $self->ua->get($url);
+  my $url = URI->new('http://twitpic.com/' . $id . ($full ? '/full' : ''));
+  my $res = $self->ua->get($url);
 
-	return undef if !$res->is_success;
+  return undef if !$res->is_success;
 
-	my $sres =
-		($full ? $self->_photo_full_scraper : $self->_photo_scaled_scraper)
-		->scrape(decode_utf8($res->content));
-	return undef if !$sres;
+  my $sres =
+  ($full ? $self->_photo_full_scraper : $self->_photo_scaled_scraper)
+  ->scrape(decode_utf8($res->content));
+  return undef if !$sres;
 
-	if ( $full ) {
-		return $sres;
-	}
+  if ( $full ) {
+    return $sres;
+  }
 
-	$sres->{views} =~ s/[^\d]*(\d+).*/$1/;
-	trim $sres->{message};
-	trim $_->{comment} for @{$sres->{comments}};
+  $sres->{views} =~ s/[^\d]*(\d+).*/$1/;
+  trim $sres->{message};
+  trim $_->{comment} for @{$sres->{comments}};
 
-	$sres;
+  $sres;
 }
 
 =head2 public_timeline
@@ -250,7 +266,7 @@ sub photo_info {
 get information of photos on public_timeline
 
 returns arrayref of hashref containing following.
-'avatar', 'username', 'mini' and 'message' ('mini' means mini-thumbnail).
+C<'avatar'>, C<'username'>, C<'mini'> and C<'message'> ('mini' is for mini-thumbnail).
 
 returns undef if failed to fetch
 
@@ -258,23 +274,23 @@ returns undef if failed to fetch
 
 sub public_timeline
 {
-	my ($self) = @_;
+  my ($self) = @_;
 
-	my $res = $self->ua->get('http://twitpic.com/public_timeline/');
-	return undef if !$res->is_success;
+  my $res = $self->ua->get('http://twitpic.com/public_timeline/');
+  return undef if !$res->is_success;
 
-	my $sres = $self->_public_timeline_scraper->scrape(decode_utf8($res->content));
-	return undef if !$sres;
+  my $sres = $self->_public_timeline_scraper->scrape(decode_utf8($res->content));
+  return undef if !$sres;
 
-	for (@{$sres->{photos}}) {
-		$_->{id} = pop @{$_->{id}};
-		$_->{message} = pop @{$_->{message}};
+  for (@{$sres->{photos}}) {
+    $_->{id} = pop @{$_->{id}};
+    $_->{message} = pop @{$_->{message}};
 
-		$_->{id} =~ s#^/##;
-		trim $_->{message};
-	}
+    $_->{id} =~ s#^/##;
+    trim $_->{message};
+  }
 
-	$sres->{photos};
+  $sres->{photos};
 }
 
 =head1 SEEALSO
