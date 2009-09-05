@@ -1,5 +1,8 @@
 Revision history for WWW-Twitpic-Fetch
 
+0.05		20090905
+				modified list method. now it returns empty ARRAY-ref when there's no photo on the page.
+
 0.04		20090711
 				just increment version number because I have mistaken uploading distfile. :(
 

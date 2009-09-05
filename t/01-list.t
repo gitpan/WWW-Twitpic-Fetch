@@ -1,4 +1,4 @@
-use Test::More tests => 10;
+use Test::More tests => 13;
 
 use WWW::Twitpic::Fetch;
 
@@ -74,3 +74,31 @@ is_deeply($twitpic->list('hige', 2),
 	{id => 'J89Tt', message => 'TEST MESSAGE 2nd', thumb => 'http://example.com/example.png'},
 	]
 );
+
+package UA3;
+use Moose;
+use Test::More;
+use HTTP::Response;
+
+sub get
+{
+	my ($self, $uri, %param) = @_;
+	is ($uri, "http://twitpic.com/photos/hige?page=3");
+	is scalar(keys %param), 0;
+	my $r = HTTP::Response->new(200);
+	$r->content(<<EOS);
+<html><head><title>TEST</title></head><body>
+</body>
+</html>
+EOS
+	$r;
+}
+
+package main;
+
+$twitpic->ua(UA3->new);
+is_deeply($twitpic->list('hige', 3), 
+	[
+	]
+);
+

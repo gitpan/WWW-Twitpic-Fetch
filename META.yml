@@ -1,6 +1,6 @@
 --- #YAML:1.0
 name:               WWW-Twitpic-Fetch
-version:            0.04
+version:            0.05
 abstract:           Moose-based information scraper/fetcher for Twitpic
 author:
     - turugina <turugina@cpan.org>
@@ -25,7 +25,7 @@ no_index:
     directory:
         - t
         - inc
-generated_by:       ExtUtils::MakeMaker version 6.52
+generated_by:       ExtUtils::MakeMaker version 6.54
 meta-spec:
     url:      http://module-build.sourceforge.net/META-spec-v1.4.html
     version:  1.4

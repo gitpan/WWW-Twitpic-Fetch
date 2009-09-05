@@ -15,11 +15,11 @@ WWW::Twitpic::Fetch - Moose-based information scraper/fetcher for Twitpic
 
 =head1 VERSION
 
-Version 0.04
+Version 0.05
 
 =cut
 
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 
 
 =head1 SYNOPSIS
@@ -200,6 +200,8 @@ sub list
   my $sres = $self->_list_scraper->scrape(decode_utf8($res->content));
 
   my ($ids, $messages, $thumbs) = map { $sres->{$_} } qw/id message thumb/;
+
+	return [] if !($ids && $messages && $thumbs);
 
   warn 'mismatch found for photo ids and messages. return value may be wrong'
   if !(scalar @$ids == scalar @$messages && scalar @$ids == scalar @$thumbs);
