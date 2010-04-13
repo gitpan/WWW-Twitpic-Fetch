@@ -47,17 +47,17 @@ sub get
 	my $r = HTTP::Response->new(200);
 	$r->content(<<EOS);
 <html><head><title>TEST</title></head><body>
-<div class="profile-photo-info">1 day ago from site</div>
 <div class="profile-photo-img"><a href="/a7g60">
 <img src="http://example.com/example.jpg" /></a></div>
 <div class="profile-photo-message">
-	TEST MESSAGE  
+	<div><p>TEST MESSAGE   </p></div>
+<div class="profile-photo-info">1 day ago from site</div>
 </div>
-<div class="profile-photo-info">2 day ago from site</div>
 <div class="profile-photo-img"><a href="/J89Tt">
 <img src="http://example.com/example.png" /></a></div>
 <div class="profile-photo-message">
-	TEST MESSAGE 2nd			
+	<div><p>TEST MESSAGE 2nd			</p></div>
+<div class="profile-photo-info">2 day ago from site</div>
 </div>
 </body>
 </html>

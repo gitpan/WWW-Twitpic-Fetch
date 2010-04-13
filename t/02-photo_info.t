@@ -114,11 +114,9 @@ sub get
 <head>
 </head>
 <body>
-<div id="main-full">
-	<div id="pic" style="padding-top:25px;">
-		<img class="photo-large" src="example-full.png" />
-	</div>
-</div>
+<div><a class="nav-link" href="/xxx">< Back to photo page</a></div>
+<div><img src="/images/logo-main.png"></div>
+<img class="photo-large" src="example-full.png" />
 </body>
 </html>
 EOS

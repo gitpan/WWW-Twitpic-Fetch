@@ -47,14 +47,13 @@ sub get
 <html>
 <body>
 <div id="main">
-<center>
-<div style="font-size:18px;">Photos tagged with <b><em>cat</em></b></div>
-<div style="padding-top:20px;">
+<div id="tag-name">Photos tagged with <b><em>cat</em></b></div>
+<center><div id="tagged-photos">
 
-	<a href="/abcde" title="title1"><img class="photo-mini" src="example1.jpg" alt="title1"></a>
-
-	<a href="/12345" title="title2"><img class="photo-mini" src="example2.jpg" alt="title2"></a>
-	</div:
+	<div><a href="/abcde" title="title1"><img class="photo-mini" src="example1.jpg" alt="title1"></a></div>
+  <div style="clear:both;">&nbsp;</div>
+	<div><a href="/12345" title="title2"><img class="photo-mini" src="example2.jpg" alt="title2"></a></div>
+	</div>
 </center>
 </div>
 </body>

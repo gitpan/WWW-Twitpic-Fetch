@@ -1,5 +1,8 @@
 Revision history for WWW-Twitpic-Fetch
 
+0.06    20100413
+        followed some changes in Twitpic's HTML output.
+
 0.05		20090905
 				modified list method. now it returns empty ARRAY-ref when there's no photo on the page.
 

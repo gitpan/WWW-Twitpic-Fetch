@@ -15,11 +15,11 @@ WWW::Twitpic::Fetch - Moose-based information scraper/fetcher for Twitpic
 
 =head1 VERSION
 
-Version 0.05
+Version 0.06
 
 =cut
 
-our $VERSION = '0.05';
+our $VERSION = '0.06';
 
 
 =head1 SYNOPSIS
@@ -87,7 +87,7 @@ has _list_scraper => (
     scraper {
       process 'div.profile-photo-img>a' => 'id[]' => '@href';
       process 'div.profile-photo-img>a>img' => 'thumb[]' => '@src';
-      process 'div.profile-photo-message' => 'message[]' => 'TEXT';
+      process 'div.profile-photo-message>div>p' => 'message[]' => 'TEXT';
     };
   },
 );
@@ -97,7 +97,7 @@ has _photo_full_scraper => (
   lazy => 1,
   default => sub {
     scraper {
-      process 'div#pic>img' => 'url' => '@src';
+      process 'body>img' => 'url' => '@src';
     };
   },
 );
@@ -113,7 +113,7 @@ has _photo_scaled_scraper => (
       process 'div.photo-comment-avatar>img' => 'avatar' => '@src';
     };
     scraper {
-      process 'div#photo>img' => 'url' => '@src';
+      process 'img#photo-display' => 'url' => '@src';
       process 'div#view-photo-views>div' => 'views' => 'TEXT';
       process 'div#view-photo-caption' => 'message' => 'TEXT';
       process 'div.photo-comment' => 'comments[]' => $each_comment;
@@ -144,11 +144,11 @@ has _tagged_scraper => (
 	lazy => 1,
 	default => sub {
 		my $each = scraper {
-			process '.' => 'id' => '@href';
+			process '.' => 'id' => ['@href', sub { s{^/}{}; $_ } ];
 			process 'img' => 'mini' => '@src';
 		};
 		scraper {
-			process 'div#main>center>div>a' => 'tagged[]' => $each;
+			process 'div#tagged-photos>div>a' => 'tagged[]' => $each;
 		};
 	},
 );
