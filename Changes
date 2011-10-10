@@ -1,5 +1,8 @@
 Revision history for WWW-Twitpic-Fetch
 
+0.07		20111010
+				fix some scraping rules. (#71562)
+
 0.06    20100413
         followed some changes in Twitpic's HTML output.
 

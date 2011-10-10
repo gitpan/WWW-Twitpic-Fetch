@@ -22,7 +22,7 @@ SKIP: {
 	$f->print("### list of mine (page2)\n");
 	_dump($f,$tp->list('turugina', 2));
 	$f->print("### certain photo (scaled)\n");
-	_dump($f,my $photo = $tp->photo_info('4rukf'));
+	_dump($f,my $photo = $tp->photo_info('2f2du7'));
 	$f->print("### certain photo (full)\n");
 	_dump($f,$tp->photo_info('4rukf', 1));
 	$f->print("### public timeline\n");
@@ -30,6 +30,12 @@ SKIP: {
 
 	my $photouri=URI->new($photo->{url});
 	my $filename = (split(m{/}, $photouri->path))[-1];
+	my $idx = index($filename, "?");
+	if ( $idx >= 0 ) {
+		$filename = substr($filename, 0, $idx);
+	}
+	diag("using filename: $filename");
+		
 	$tp->ua->mirror($photouri, $filename);
 
 	$f->printf("### tagged photos\n");

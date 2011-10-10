@@ -15,11 +15,11 @@ WWW::Twitpic::Fetch - Moose-based information scraper/fetcher for Twitpic
 
 =head1 VERSION
 
-Version 0.06
+Version 0.07
 
 =cut
 
-our $VERSION = '0.06';
+our $VERSION = '0.07';
 
 
 =head1 SYNOPSIS
@@ -85,9 +85,9 @@ has _list_scraper => (
   lazy => 1,
   default => sub {
     scraper {
-      process 'div.profile-photo-img>a' => 'id[]' => '@href';
-      process 'div.profile-photo-img>a>img' => 'thumb[]' => '@src';
-      process 'div.profile-photo-message>div>p' => 'message[]' => 'TEXT';
+      process 'div.user-photo>a' => 'id[]' => '@href';
+      process 'div.user-photo>a>img' => 'thumb[]' => '@src';
+      process 'div.user-tweet>p.' => 'message[]' => 'TEXT';
     };
   },
 );
@@ -117,7 +117,7 @@ has _photo_scaled_scraper => (
       process 'div#view-photo-views>div' => 'views' => 'TEXT';
       process 'div#view-photo-caption' => 'message' => 'TEXT';
       process 'div.photo-comment' => 'comments[]' => $each_comment;
-			process 'div#view-photo-tags>a.nav' => 'tags[]' => 'TEXT';
+			process 'div#view-photo-tags>span>a.nav-link' => 'tags[]' => 'TEXT';
     };
   },
 );
